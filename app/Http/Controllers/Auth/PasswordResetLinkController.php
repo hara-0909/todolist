@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use App\Models\User; 
 
 class PasswordResetLinkController extends Controller
 {
@@ -28,6 +29,11 @@ class PasswordResetLinkController extends Controller
      */
     public function store(Request $request)
     {
+        if (!User::where('email', $request->email)->exists()) {
+            return back()->withInput($request->only('email'))
+                         ->withErrors(['email' => 'このメールアドレスは登録されていません。']);
+        }
+        
         $request->validate([
             'email' => ['required', 'email'],
         ]);
@@ -44,4 +50,6 @@ class PasswordResetLinkController extends Controller
                     : back()->withInput($request->only('email'))
                             ->withErrors(['email' => __($status)]);
     }
+
+    
 }

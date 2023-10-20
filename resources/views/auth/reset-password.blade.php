@@ -5,10 +5,21 @@
     <div class="row">
       <div class="col col-md-offset-3 col-md-6">
         <nav class="panel panel-default">
+        @if ($errors->any())
+          <div class="alert alert-danger">
+              <ul>
+                  @foreach ($errors->all() as $error)
+                      <li>{{ $error }}</li>
+                  @endforeach
+              </ul>
+          </div>
+      @endif
+
           <div class="panel-heading">パスワード再発行</div>
           <div class="panel-body">
             <form action="{{ route('password.update') }}" method="POST">
               @csrf
+              <input type="hidden" name="token" value="{{ $request->route('token') }}">
               <div class="form-group">
                 <label for="email">メールアドレス</label>
                 <input type="text" class="form-control" id="email" name="email" />
